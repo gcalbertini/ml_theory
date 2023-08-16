@@ -61,10 +61,7 @@ always be true. Further reading:
 	with probability at least $1 - \delta$, the error of $h$ on
 	$\mathcal{D}$ is at
 	most $\epsilon$. Assume a distribution $\mathcal{D}$ on $\mathcal{X}
-		\times \{-1, +1\}$ where both oracles generate samples from
-	$\mathcal{D}_{+}
-		\propto \mathcal{D}(x,1)$ and $\mathcal{D}_{-} \propto
-		\mathcal{D}(x,-1)$.
+		\times \{-1, +1\}$.
 	The learner's goal is to output a hypothesis with such probability over
 	the
 	choice of two training sets (in the stochastic scenario where the
@@ -87,17 +84,14 @@ always be true. Further reading:
 			\mathcal{D}}{\mathbb{P}}[h(x) \neq
 			c(x)]
 		\\
-		& =\mathcal{D}^+(R(h)_{\mathcal{D}_{+}})+\mathcal{D}^-(R(h)_{\mathcal{D}_{-}})
-		\\
-		& =\mathcal{D}^+(R(h)_{\mathcal{D}_{+}})+(1-\mathcal{D}^+)(R(h)_{\mathcal{D}_{-}})
-		\\
+		& =\mathcal{D}(\mathcal{X}^+)(R(h)_{\mathcal{D}_{+}})+\mathcal{D}(\mathcal{X}^-)(R(h)_{\mathcal{D}_{-}})
 	\end{flalign*}
 	Now for a weighted sampling method from the negative and positive
 	instance distributions we can say $\epsilon_{\mathcal{D}} =
-		\mathcal{D}^+(\alpha
-		\epsilon)_{\mathcal{D}^+}+\mathcal{D}^-(\beta
+		\mathbb{P}[\mathcal{D}^+](\alpha
+		\epsilon)_{\mathcal{D}^+}+\mathbb{P}[\mathcal{D}^-](\beta
 		\epsilon)_{\mathcal{D}^-} =  \epsilon
-		\underbrace{(\mathcal{D}^+(\alpha -
+		\underbrace{(\mathbb{P}[\mathcal{D}^+](\alpha -
 			\beta)+\beta)}_{\leq 1}$ for some constants $0 \leq
 		\alpha, \beta \leq 1$.
 	Note that $\alpha = \beta = 0 \implies \epsilon = 0$,
@@ -109,7 +103,7 @@ always be true. Further reading:
 	$ \epsilon  =1$, you're ok accepting any hypothesis without
 	regard to its performance.
 	Thus, select an
-	appropriate $\delta$ and, for simplicity, set $\mathcal{D}^+ =
+	appropriate $\delta$ and, for simplicity, set $\mathbb{P}[\mathcal{D}^+] =
 		\frac{1}{2}$, to get
 	\begin{flalign*}
 		\mathbb{P}[R(h)_\mathcal{D} \leq \frac{\alpha \epsilon}{2}]
@@ -151,8 +145,8 @@ always be true. Further reading:
 	the two-oracle PAC model so there
 	exists an algorithm $\mathcal{A}$ such that for $c \in \mathcal{C}$,
 	$\epsilon, \delta >0$, there are $m^+$ and $m^-$
-	in $p(1/\epsilon, 1/δ, size(c))$, such that if we draw at least this
-	number of negative and positive instances with confidence $1 - \delta$,
+	in $p(1/\epsilon, 1/\delta, size(c))$, such that if we draw at least this
+	number of negative and positive instances with confidence of at least $1 - \delta$,
 	the
 	hypothesis $h$ output by the learner satisfies:
 	\begin{flalign*}
@@ -166,9 +160,18 @@ always be true. Further reading:
 	If we draw too few examples, the conclusions about the hypothesis's
 	performance might not hold true for the entire distribution (generalize); to
 	bridge the gap between the variant and standard model it is then best
-	to take $m \geq \max\{m^+, m^-\}$ and, with conditions above,
+	to take $m \geq \max\{m^+, m^-\}$ and, drawing such with polynomial conditions above and using the union bound and total probability,
 	\begin{flalign*}
-		\mathbb{P}[R(h)_{\mathcal{D}}]
+		\mathbb{P}[R(h)_{\mathcal{D}}] &\leq \mathbb{P}[\mathcal{D}^+]\mathbb{P}(R(h)_{\mathcal{D}_{+}})+ \mathbb{P}[\mathcal{D}^-]\mathbb{P}(R(h)_{\mathcal{D}_{-}})= \mathbb{P}[R(h)_{\mathcal{D}}|c(x) \neq -1]\mathbb{P}[c(x) \neq -1] + \mathbb{P}[R(h)_{\mathcal{D}}|c(x) \neq 1]\mathbb{P}[c(x) \neq 1]\\
+		&\leq \epsilon(\mathbb{P}[c(x) \neq -1] + \mathbb{P}[c(x) \neq 1]) \leq \epsilon\\
 	\end{flalign*}
-
+	Let $X$ be the total number of positive examples obtained from drawing $m$ examples, with probability of a positive example of $\epsilon$ as shown above.
+	\begin{flalign*}
+		\mathbb{P}\Bigg[\frac{X}{m} \leq (1-\gamma) \epsilon  \Bigg] \leq e^{-\frac{m \epsilon \gamma^2}{2}}
+	\end{flalign*}
+	Arbitrarily setting (a rather lax) $\gamma = \frac{1}{2}$ (required that $\gamma \in [0, 1/\epsilon - 1]$) and needing $m^+ = m(1-\gamma)\epsilon = \frac{m \epsilon}{2}$,
+	\begin{flalign*}
+		\mathbb{P}\Bigg[X \leq m^+  \Bigg] &\leq e^{-\frac{m^+}{4}} \iff \mathbb{P}\Bigg[X > m^+  \Bigg] \geq 1-e^{-\frac{m^+}{4}}\\
+	\end{flalign*}
+	Since we want to include the minimum number of positive instances, we set the latter expression to an appropriate bound $\delta/2$ (from above, we saw that using an even split weight between negative and positive examples with overall $\epsilon/2$ as we set here, so can use 2(1-$(\delta/2)) > 1-\delta$) and subsitute back to get an expression of $m \geq \min \{\frac{2m^+}{\epsilon}, \frac{8}{\epsilon}\log(2/(2-\delta))\}$. A similar procedure is done with the negative case to arrive at $m \geq \min \{\frac{2m^+}{\epsilon}, \frac{2m^-}{\epsilon}, \frac{8}{\epsilon}\log(2/(2-\delta))\}$ for a balanced dataset.
 }

@@ -167,11 +167,11 @@ always be true. Further reading:
 	\end{flalign*}
 	Let $X$ be the total number of positive examples obtained from drawing $m$ examples, with probability of a positive example of $\epsilon$ as shown above.
 	\begin{flalign*}
-		\mathbb{P}\Bigg[\frac{X}{m} \leq (1-\gamma) \epsilon  \Bigg] \leq e^{-\frac{m \epsilon \gamma^2}{2}}
+		\mathbb{P}\Bigg[\frac{X}{m} \geq (1-\gamma) \epsilon  \Bigg] \leq e^{-\frac{m \epsilon \gamma^2}{3}} \leq \delta
 	\end{flalign*}
-	Arbitrarily setting (a rather lax) $\gamma = \frac{1}{2}$ (required that $\gamma \in [0, 1/\epsilon - 1]$) and needing $m^+ = m(1-\gamma)\epsilon = \frac{m \epsilon}{2}$,
+	Setting (a rather lax) $\gamma = \frac{1}{2}$, required that $\gamma \in [0, 1/\epsilon - 1]$, to match conditions above and needing $m^+ = m(1-\gamma)\epsilon = \frac{m \epsilon}{2}$,
 	\begin{flalign*}
-		\mathbb{P}\Bigg[X \leq m^+  \Bigg] &\leq e^{-\frac{m^+}{4}} \iff \mathbb{P}\Bigg[X > m^+  \Bigg] \geq 1-e^{-\frac{m^+}{4}}\\
+		\mathbb{P}\Bigg[X \geq m^+  \Bigg] &\leq e^{-\frac{m^+}{6}} \leq \frac{\delta}{2}\\
 	\end{flalign*}
-	Since we want to include the minimum number of positive instances, we set the latter expression to an appropriate bound $\delta/2$ (from above, we saw that using an even split weight between negative and positive examples with overall $\epsilon/2$ as we set here, so can use 2(1-$(\delta/2)) > 1-\delta$) and subsitute back to get an expression of $m \geq \min \{\frac{2m^+}{\epsilon}, \frac{8}{\epsilon}\log(2/(2-\delta))\}$. A similar procedure is done with the negative case to arrive at $m \geq \min \{\frac{2m^+}{\epsilon}, \frac{2m^-}{\epsilon}, \frac{8}{\epsilon}\log(2/(2-\delta))\}$ for a balanced dataset.
+	Since we want to include the minimum number of positive instances, we set the latter expression to an appropriate bound $\delta/2$ (from above, we saw that using an even split weight between negative and positive examples with overall $\epsilon/2$ as we set here, so can use 2(1-$(\delta/2)) > 1-\delta$) and subsitute back to get an expression of $m \geq \min \{\frac{2m^+}{\epsilon}, \frac{12}{\epsilon}\log(2/(\delta))\}$. A similar procedure is done with the negative case to arrive at $m \geq \min \{\frac{2m^+}{\epsilon}, \frac{2m^-}{\epsilon}, \frac{12}{\epsilon}\log(2/(\delta))\}$ for a balanced dataset.
 }

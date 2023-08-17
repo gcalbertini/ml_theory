@@ -84,8 +84,7 @@ always be true. Further reading:
 			\mathcal{D}}{\mathbb{P}}[h(x) \neq
 			c(x)]
 		\\
-		                   &
-		=\mathcal{D}(\mathcal{X}^+)(R(h)_{\mathcal{D}_{+}})+\mathcal{D}(\mathcal{X}^-)(R(h)_{\mathcal{D}_{-}})
+		                   & =\mathcal{D}(\mathcal{X}^+)(R(h)_{\mathcal{D}_{+}})+\mathcal{D}(\mathcal{X}^-)(R(h)_{\mathcal{D}_{-}})
 	\end{flalign*}
 	Now for a weighted sampling method from the negative and positive
 	instance distributions we can say $\epsilon_{\mathcal{D}} =
@@ -177,37 +176,118 @@ always be true. Further reading:
 		\mathbb{P}[R(h)_{\mathcal{D}}] & \leq
 		\mathbb{P}[\mathcal{D}^+]\mathbb{P}(R(h)_{\mathcal{D}_{+}})+
 		\mathbb{P}[\mathcal{D}^-]\mathbb{P}(R(h)_{\mathcal{D}_{-}})=
-		\mathbb{P}[R(h)_{\mathcal{D}}|c(x) \neq -1]\mathbb{P}[c(x) \neq -1] +
-		\mathbb{P}[R(h)_{\mathcal{D}}|c(x) \neq 1]\mathbb{P}[c(x) \neq 1]                              \\
-		                               & \leq \epsilon(\mathbb{P}[c(x) \neq -1] + \mathbb{P}[c(x) \neq
-		1]) \leq \epsilon                                                                              \\
+		\mathbb{P}[R(h)_{\mathcal{D}}|c(x) \neq -1]\mathbb{P}[c(x) \neq
+			-1] +
+		\mathbb{P}[R(h)_{\mathcal{D}}|c(x) \neq 1]\mathbb{P}[c(x) \neq
+			1]
+		\\
+		                               & \leq \epsilon(\mathbb{P}[c(x)
+				\neq -1] + \mathbb{P}[c(x) \neq
+				1]) \leq \epsilon
+		\\
 	\end{flalign*}
 	Let $X$ be the total number of positive examples obtained from drawing
-	$m$ examples, with probability of a positive example of $\epsilon$ as shown
-	above.
+	$m$ examples, with probability of a positive example of $\epsilon$ as
+	shown
+	above. Note $\mathbb{E}[X] = m\epsilon$ and if $\epsilon < 1$, then $\mathbb{E}[X] < m$, indicating that you expect to obtain fewer positive examples on 
+	average than the total number of examples drawn.
 	\begin{flalign*}
-		\mathbb{P}\Bigg[\frac{X}{m} \geq (1-\gamma) \epsilon  \Bigg]
-		\leq e^{-\frac{m \epsilon \gamma^2}{3}} \leq \delta
+		\mathbb{P}\Bigg[\frac{X}{m} \leq (1-\gamma) \epsilon  \Bigg]
+		\leq e^{-\frac{m \epsilon \gamma^2}{2}} \implies \mathbb{P}\Bigg[X > (1-\gamma) m\epsilon  \Bigg]
+		\leq e^{-\frac{m \epsilon \gamma^2}{2}}
 	\end{flalign*}
 	Setting (a rather lax) $\gamma = \frac{1}{2}$, required that $\gamma
-		\in [0, 1/\epsilon - 1]$, to match conditions above and needing $m^+ =
+		\in [0, 1/\epsilon - 1]$, to match conditions above and needing $m^+ = 
 		m(1-\gamma)\epsilon = \frac{m \epsilon}{2}$,
 	\begin{flalign*}
-		\mathbb{P}\Bigg[X \geq m^+  \Bigg] & \leq e^{-\frac{m^+}{6}}
+		\mathbb{P}\Bigg[X > m^+  \Bigg] & \leq e^{-\frac{m^+}{4}}
 		\leq \frac{\delta}{2}                                        \\
 	\end{flalign*}
 	Since we want to include the minimum number of positive instances, we
-	set the latter expression to an appropriate bound $\delta/2$ (from above, we
-	saw that using an even split weight between negative and positive examples with
-	overall $\epsilon/2$ as we set here, so can use 2(1-$(\delta/2)) > 1-\delta$)
+	set the latter expression to an appropriate bound $\delta/2$ (from
+	above, we
+	saw that using an even split weight between negative and positive
+	examples with
+	overall $\epsilon/2$ as we set here, so can use 2(1-$(\delta/2)) >
+		1-\delta$)
 	and subsitute back to get an expression of $m \geq \min
-		\{\frac{2m^+}{\epsilon}, \frac{12}{\epsilon}\log(2/(\delta))\}$. A similar
+		\{\frac{2m^+}{\epsilon},
+		\frac{8}{\epsilon}\log(2/(\delta))\}$. A similar
 	procedure is done with the negative case to arrive at $m \geq \min
 		\{\frac{2m^+}{\epsilon}, \frac{2m^-}{\epsilon},
-		\frac{12}{\epsilon}\log(2/(\delta))\}$ for a balanced dataset.
+		\frac{8}{\epsilon}\log(2/(\delta))\}$ for a balanced dataset.
 }
 
-Good learners will learn with high proability and close approximation to the
+\section{Summary}
+PAC learning makes a rather strong assumption that there exists a function
+(concept),
+which is a subset of the domain, $c:\mathcal{X} \rightarrow \mathcal{Y}$, where
+$\mathcal{Y}=\{0,1\}$.
+We assume that examples are independently and identically distributed (i.i.d.)
+according to some
+fixed but unknown data distribution and the learner considers a set of concepts
+(hypotheses, set $\mathcal{H}$)
+which may or may not coincide with the ``true'' set of concepts
+($\mathcal{C}$).  It receives a sample $S$ drawn i.i.d.
+according to $\mathcal{D}$ as well as the labels $(c(x_1), \cdots , c(x_m))$,
+which are based on a
+specific target concept $c \in \mathcal{C}$ to learn. The task is then to
+use the labeled sample $S$
+to select a hypothesis $h \in \mathcal{H}$ that has a small generalization
+error with respect to the concept $c$.\par
+While it would be great to always select a hypothesis for which we get 0
+error, since we draw from a training set which have a non-zero probability of
+have misleading examples (thus bound such cases with $\delta$),
+there may be several hypothesis consistent with such a sampling; the only way
+for the learner to
+pick the optimal solution for the target is to train on all the samples in the
+domain, or universe (unrealistic). It may also just overfit to memorize
+instances in a
+sampling to become a baseline classifier. We relax this assumption with the
+small
+$\epsilon$. Note that $\epsilon = 0$
+implies that the the learned hypothesis needs to perfectly match the true
+target function, which can lead to this overfitting and possibly require
+complex
+hypotheses. The converse $\epsilon = 1$ would
+allow for any hypothesis without regard to its performance, hence no learning.
+To
+further relax the assumption that (near) zero error be made by all predictors
+in
+$\mathcal{H}$ (without knowing if the target concept $c$ lies in
+$\mathcal{H}$), we insist on a finite set of hypotheses,
+which requires some inductive bias; that is, we make an assumption that there
+exists a ``good'' set of candidate predictors which contain the target concept,
+$c \in \mathcal{H}$. As before, PAC learning then guarantees
+an approximately correct (small trues loss) hypothesis (from a possible set of
+minimizers) given a sufficiently sized sample.
+In the most (realistic) general case, there may be no hypothesis in
+$\mathcal{H}$ consistent with the labeled training sample. This
+gives us more latitude for a fixed $|\mathcal{H}|$, but to attain the same
+guarantee as in the consistent case, a quadratically larger labeled sample is
+needed in this tradeoff between error and sample size (see Mohri).\par
+Note that the proof of consistent, finite set case relied on the underlying technique of sampling from the
+data distribution and then determining a good generalizable hypothesis after
+assessing all in-sample errors. That is,
+there may be a set of (poor) samples ($x_i$'s) for which the risk under a
+chosen hypothesis is larger than $\epsilon$. We would want to avoid the set of
+all bad hypotheses
+for which this ``bad'' condition holds, yet note that we may come across a bad
+hypothesis that shows zero in-sample error for a given sample. The set of all
+samples that will lead the
+chosen (bad) hypothesis to produce error greater than $\epsilon$ is a subset of
+the set of all samples for which there exists some (bad) hypothesis that
+produces zero in-sample error (which we may or may not have chosen). Thus, by
+bounding the
+superset (and thus further constricting the subset of interest), we are saying
+that
+the union of all samples producing 0 in-sample error for some fixed
+``deceiving'' hypothesis
+is at most the probability that we choose this poor hypothesis that agrees with
+the label for each chosen point
+chosen i.i.d from the sample, which is at most $\delta$.\par
+Wrapping up: good learners will learn with high proability and close
+approximation to the
 target concept. With high probability, we find a hypothesis that will have low
 error (approximately correct), requiring parameters $\epsilon, \delta > 0$.
 Thus, with probability of at least $1-\delta$, the algorithm learns the concept
@@ -215,8 +295,7 @@ with error at most $\epsilon$. The $\epsilon$ is the upper bound on the
 accuracy ($1-\epsilon$). We use $\delta$ to bound the probability of failure in
 achieving the set accuracy (a bad event) and thus want a hypothesis to be
 approximately correct with confidence $1-\delta$.\par
-Yessir
 
 \centering
-\includegraphics[width=0.8\textwidth]{./chapters/goodPAC.png} 
-\includegraphics[width=0.8\textwidth]{./chapters/badPAC.png} 
+\includegraphics[width=0.8\textwidth]{./chapters/goodPAC.png}
+\includegraphics[width=0.8\textwidth]{./chapters/badPAC.png}

@@ -84,7 +84,8 @@ always be true. Further reading:
 			\mathcal{D}}{\mathbb{P}}[h(x) \neq
 			c(x)]
 		\\
-		& =\mathcal{D}(\mathcal{X}^+)(R(h)_{\mathcal{D}_{+}})+\mathcal{D}(\mathcal{X}^-)(R(h)_{\mathcal{D}_{-}})
+		                   &
+		=\mathcal{D}(\mathcal{X}^+)(R(h)_{\mathcal{D}_{+}})+\mathcal{D}(\mathcal{X}^-)(R(h)_{\mathcal{D}_{-}})
 	\end{flalign*}
 	Now for a weighted sampling method from the negative and positive
 	instance distributions we can say $\epsilon_{\mathcal{D}} =
@@ -103,7 +104,8 @@ always be true. Further reading:
 	$ \epsilon  =1$, you're ok accepting any hypothesis without
 	regard to its performance.
 	Thus, select an
-	appropriate $\delta$ and, for simplicity, set $\mathbb{P}[\mathcal{D}^+] =
+	appropriate $\delta$ and, for simplicity, set
+	$\mathbb{P}[\mathcal{D}^+] =
 		\frac{1}{2}$, to get
 	\begin{flalign*}
 		\mathbb{P}[R(h)_\mathcal{D} \leq \frac{\alpha \epsilon}{2}]
@@ -128,14 +130,19 @@ always be true. Further reading:
 	the weight of distribution of samples. Another thing to note is that by
 	setting $\alpha$ or $\beta$ to 0, we're essentially requiring
 	that the hypothesis have zero error on positive (or negative)
-	instances (perhaps requiring an absurdly complex hypothesis to do so). This
-	transforms the problem into a rather stringent one-oracle PAC model focused
+	instances (perhaps requiring an absurdly complex hypothesis to do so).
+	This
+	transforms the problem into a rather stringent one-oracle PAC model
+	focused
 	solely
 	on the positive (or negative) class which is not sensitive to noise.
-	The PAC framework is designed to find a balance between minimizing errors on
-	both classes while accounting for uncertainties in real-world data; this decoupled mode
+	The PAC framework is designed to find a balance between minimizing
+	errors on
+	both classes while accounting for uncertainties in real-world data;
+	this decoupled mode
 	tells the learner to query the oracle for
-	instances of one class while imposing stringent error requirements on the other
+	instances of one class while imposing stringent error requirements on
+	the other
 	class. \\ \\
 
 	Necessary: Show that if $\mathcal{H}$ is PAC-learnable in the
@@ -145,8 +152,10 @@ always be true. Further reading:
 	the two-oracle PAC model so there
 	exists an algorithm $\mathcal{A}$ such that for $c \in \mathcal{C}$,
 	$\epsilon, \delta >0$, there are $m^+$ and $m^-$
-	in $p(1/\epsilon, 1/\delta, size(c))$, such that if we draw at least this
-	number of negative and positive instances with confidence of at least $1 - \delta$,
+	in $p(1/\epsilon, 1/\delta, size(c))$, such that if we draw at least
+	this
+	number of negative and positive instances with confidence of at least
+	$1 - \delta$,
 	the
 	hypothesis $h$ output by the learner satisfies:
 	\begin{flalign*}
@@ -155,23 +164,59 @@ always be true. Further reading:
 		\mathbb{P}[\epsilon] = \epsilon
 	\end{flalign*}
 	So, given sufficient numbers of negative and positive examples, we can
-	generate a hypothesis $h$ such that it has low errors on both negative and
+	generate a hypothesis $h$ such that it has low errors on both negative
+	and
 	positive instances.
 	If we draw too few examples, the conclusions about the hypothesis's
-	performance might not hold true for the entire distribution (generalize); to
+	performance might not hold true for the entire distribution
+	(generalize); to
 	bridge the gap between the variant and standard model it is then best
-	to take $m \geq \max\{m^+, m^-\}$ and, drawing such with polynomial conditions above and using the union bound and total probability,
+	to take $m \geq \max\{m^+, m^-\}$ and, drawing such with polynomial
+	conditions above and using the union bound and total probability,
 	\begin{flalign*}
-		\mathbb{P}[R(h)_{\mathcal{D}}] &\leq \mathbb{P}[\mathcal{D}^+]\mathbb{P}(R(h)_{\mathcal{D}_{+}})+ \mathbb{P}[\mathcal{D}^-]\mathbb{P}(R(h)_{\mathcal{D}_{-}})= \mathbb{P}[R(h)_{\mathcal{D}}|c(x) \neq -1]\mathbb{P}[c(x) \neq -1] + \mathbb{P}[R(h)_{\mathcal{D}}|c(x) \neq 1]\mathbb{P}[c(x) \neq 1]\\
-		&\leq \epsilon(\mathbb{P}[c(x) \neq -1] + \mathbb{P}[c(x) \neq 1]) \leq \epsilon\\
+		\mathbb{P}[R(h)_{\mathcal{D}}] & \leq
+		\mathbb{P}[\mathcal{D}^+]\mathbb{P}(R(h)_{\mathcal{D}_{+}})+
+		\mathbb{P}[\mathcal{D}^-]\mathbb{P}(R(h)_{\mathcal{D}_{-}})=
+		\mathbb{P}[R(h)_{\mathcal{D}}|c(x) \neq -1]\mathbb{P}[c(x) \neq -1] +
+		\mathbb{P}[R(h)_{\mathcal{D}}|c(x) \neq 1]\mathbb{P}[c(x) \neq 1]                              \\
+		                               & \leq \epsilon(\mathbb{P}[c(x) \neq -1] + \mathbb{P}[c(x) \neq
+		1]) \leq \epsilon                                                                              \\
 	\end{flalign*}
-	Let $X$ be the total number of positive examples obtained from drawing $m$ examples, with probability of a positive example of $\epsilon$ as shown above.
+	Let $X$ be the total number of positive examples obtained from drawing
+	$m$ examples, with probability of a positive example of $\epsilon$ as shown
+	above.
 	\begin{flalign*}
-		\mathbb{P}\Bigg[\frac{X}{m} \geq (1-\gamma) \epsilon  \Bigg] \leq e^{-\frac{m \epsilon \gamma^2}{3}} \leq \delta
+		\mathbb{P}\Bigg[\frac{X}{m} \geq (1-\gamma) \epsilon  \Bigg]
+		\leq e^{-\frac{m \epsilon \gamma^2}{3}} \leq \delta
 	\end{flalign*}
-	Setting (a rather lax) $\gamma = \frac{1}{2}$, required that $\gamma \in [0, 1/\epsilon - 1]$, to match conditions above and needing $m^+ = m(1-\gamma)\epsilon = \frac{m \epsilon}{2}$,
+	Setting (a rather lax) $\gamma = \frac{1}{2}$, required that $\gamma
+		\in [0, 1/\epsilon - 1]$, to match conditions above and needing $m^+ =
+		m(1-\gamma)\epsilon = \frac{m \epsilon}{2}$,
 	\begin{flalign*}
-		\mathbb{P}\Bigg[X \geq m^+  \Bigg] &\leq e^{-\frac{m^+}{6}} \leq \frac{\delta}{2}\\
+		\mathbb{P}\Bigg[X \geq m^+  \Bigg] & \leq e^{-\frac{m^+}{6}}
+		\leq \frac{\delta}{2}                                        \\
 	\end{flalign*}
-	Since we want to include the minimum number of positive instances, we set the latter expression to an appropriate bound $\delta/2$ (from above, we saw that using an even split weight between negative and positive examples with overall $\epsilon/2$ as we set here, so can use 2(1-$(\delta/2)) > 1-\delta$) and subsitute back to get an expression of $m \geq \min \{\frac{2m^+}{\epsilon}, \frac{12}{\epsilon}\log(2/(\delta))\}$. A similar procedure is done with the negative case to arrive at $m \geq \min \{\frac{2m^+}{\epsilon}, \frac{2m^-}{\epsilon}, \frac{12}{\epsilon}\log(2/(\delta))\}$ for a balanced dataset.
+	Since we want to include the minimum number of positive instances, we
+	set the latter expression to an appropriate bound $\delta/2$ (from above, we
+	saw that using an even split weight between negative and positive examples with
+	overall $\epsilon/2$ as we set here, so can use 2(1-$(\delta/2)) > 1-\delta$)
+	and subsitute back to get an expression of $m \geq \min
+		\{\frac{2m^+}{\epsilon}, \frac{12}{\epsilon}\log(2/(\delta))\}$. A similar
+	procedure is done with the negative case to arrive at $m \geq \min
+		\{\frac{2m^+}{\epsilon}, \frac{2m^-}{\epsilon},
+		\frac{12}{\epsilon}\log(2/(\delta))\}$ for a balanced dataset.
 }
+
+Good learners will learn with high proability and close approximation to the
+target concept. With high probability, we find a hypothesis that will have low
+error (approximately correct), requiring parameters $\epsilon, \delta > 0$.
+Thus, with probability of at least $1-\delta$, the algorithm learns the concept
+with error at most $\epsilon$. The $\epsilon$ is the upper bound on the
+accuracy ($1-\epsilon$). We use $\delta$ to bound the probability of failure in
+achieving the set accuracy (a bad event) and thus want a hypothesis to be
+approximately correct with confidence $1-\delta$.\par
+Yessir
+
+\centering
+\includegraphics[width=0.8\textwidth]{./chapters/goodPAC.png} 
+\includegraphics[width=0.8\textwidth]{./chapters/badPAC.png} 

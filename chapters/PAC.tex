@@ -484,7 +484,7 @@ which means closed intervals also can be considered PAC-learnable.
 	ascending order and take note of where consective positive labels
 	are located, this tells us where the (possible) union is. The problem
 	arises in this case: false positives are found where positive instances sampled don't cover a full
-	interval of interest, so the learner assumes some instances are incorrectly false. Also, false positives
+	interval of interest, so the learner assumes some instances are incorrectly false if they lie in the ``non-covered'' intervals as in the one-interval case studied previously. Also, false positives
 	may occur when no sample instances come from the region between the intervals, which fools the learner
 	into thinking a smaller error region exists. The other case is where both intervals overlap, which decays to 
 	the problem of one closed intervals which we saw was PAC-learnable. Analyzing the disjoint case,
@@ -492,10 +492,26 @@ which means closed intervals also can be considered PAC-learnable.
 		\mathbb{P}[R(h_S)~errs] &= R(h_S)_{FP_{(b,c)}} + R(h_S)_{FN_{[a,b]}} + R(h_S)_{FN_{[c,d]}}\\
 		\mathbb{P}[R(h_S) > \epsilon] &\leq \mathbb{P}[(R(h_S)_{FP_{(b,c)}} > \epsilon/3) \cup (R(h_S)_{FN_{[a,b]}} > \epsilon/3) \cup (R(h_S)_{FN_{[c,d]}} > \epsilon/3)]\\
 		&\leq \mathbb{P}[R(h_S)_{FP} > \epsilon/3]+\sum_{i=1}^2 \mathbb{P}[R(h_S)_{FN} > \epsilon/3]\\
-		&\leq (1-\epsilon/3)^m + 2(2(1-\epsilon/3)^m) \leq e^{-\frac{m\epsilon}{3}}+4e^{-\frac{m \epsilon}{3}} = 5e^{-\frac{m \epsilon}{3}} \leq \delta \implies m \geq \frac{3}{\epsilon}\log \frac{5}{\delta}\\
+		&\leq (1-\epsilon/3)^m + 2(2(1-\epsilon/6)^m) \leq e^{-\frac{m\epsilon}{3}}+4e^{-\frac{m \epsilon}{6}} =  e^{-\frac{2m\epsilon}{6}}+4e^{-\frac{m \epsilon}{6}}\leq 5e^{-\frac{m \epsilon}{6}} \leq \delta \implies m \geq \frac{3}{\epsilon}\log \frac{6}{\delta}\\
 	\end{flalign*}
-	This shows that the union of closed intervals is also PAC learnable.
+	This shows that the union of closed intervals is also PAC learnable. To generalize to unions of $p \geq 1$ closed intervals, we need to sum both $p-1$ regions of false positives and both of the $p$ regions of false negatives. That is,
+	\begin{flalign*}
+		\mathbb{P}[R(h_S) > \epsilon] &\leq \sum_{i=2}^{p} \mathbb{P}[(R(h_S)_{FP} > \epsilon/(2p-1)] + \sum_{i=1}^{2p} \mathbb{P}[R(h_S)_{FN} > \epsilon/(2p-1)]\\
+		&= (p-1)\mathbb{P}[(R(h_S)_{FP} > \epsilon/(2p-1)] + 2p \mathbb{P}[R(h_S)_{FN} > \epsilon/(2p-1)]\\
+		&= (p-1)(1-\frac{\epsilon/(2p-1)}{p-1})^m + (2p)(1-\frac{\epsilon/(2p-1)}{p})^m \leq (p-1)e^{-\frac{m\epsilon'}{p}} + 2pe^{-\frac{m \epsilon'}{p}}= (p-1)e^{-\frac{m \epsilon'}{p-1}}+2pe^{-\frac{m \epsilon'}{p}}\\
+		&\leq (p-1)e^{-\frac{m \epsilon'}{p}} + 2pe^{-\frac{m \epsilon'}{p}} = (3p-1)e^{-\frac{m\epsilon}{p(2p-1)}}\\
+		&\leq \delta \implies m \geq \frac{p(2p-1)}{\epsilon}\log \frac{3p-1}{\delta}
+	\end{flalign*}
+
 }
+\exercise{2.10}{
+	For simplicity, we choose the uniform distribution. When you sample uniformly at random from $\mathcal{Z}$, each example has a $1/m$ probability of 
+	being included in the random sample. By verifying the consistency of the hypothesis $h$ with a sample of examples from $\mathcal{Z}$, you 
+	are effectively assessing the hypothesis's performance on a random subset of the data. If the hypothesis performs well on this random subset, 
+	it suggests that it's likely to perform well on the entire dataset, assuming that the sample size is sufficiently large and representative. Thus, if $R(h) \leq 1/m$, we 
+	guarantee a consistent hypothesis. To avoid a case where the algorithm makes random guesses ($\epsilon = 0.5$) without much regard for the quality of its predictions,
+	set $\epsilon := 1/(m+1)$.
+}\\
 \section{Summary}
 PAC learning makes a rather strong assumption that there exists a function
 (concept),

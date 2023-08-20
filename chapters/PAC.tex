@@ -492,15 +492,15 @@ which means closed intervals also can be considered PAC-learnable.
 		\mathbb{P}[R(h_S)~errs] &= R(h_S)_{FP_{(b,c)}} + R(h_S)_{FN_{[a,b]}} + R(h_S)_{FN_{[c,d]}}\\
 		\mathbb{P}[R(h_S) > \epsilon] &\leq \mathbb{P}[(R(h_S)_{FP_{(b,c)}} > \epsilon/3) \cup (R(h_S)_{FN_{[a,b]}} > \epsilon/3) \cup (R(h_S)_{FN_{[c,d]}} > \epsilon/3)]\\
 		&\leq \mathbb{P}[R(h_S)_{FP} > \epsilon/3]+\sum_{i=1}^2 \mathbb{P}[R(h_S)_{FN} > \epsilon/3]\\
-		&\leq (1-\epsilon/3)^m + 2(2(1-\epsilon/6)^m) \leq e^{-\frac{m\epsilon}{3}}+4e^{-\frac{m \epsilon}{6}} =  e^{-\frac{2m\epsilon}{6}}+4e^{-\frac{m \epsilon}{6}}\leq 5e^{-\frac{m \epsilon}{6}} \leq \delta \implies m \geq \frac{3}{\epsilon}\log \frac{6}{\delta}\\
+		&\leq (1-\epsilon/3)^m + 2(2(1-\epsilon/6)^m) \leq e^{-\frac{m\epsilon}{3}}+4e^{-\frac{m \epsilon}{6}} =  e^{-\frac{2m\epsilon}{6}}+4e^{-\frac{m \epsilon}{6}}\leq 5e^{-\frac{m \epsilon}{6}} \leq \delta \implies m \geq \frac{6}{\epsilon}\log \frac{5}{\delta}\\
 	\end{flalign*}
 	This shows that the union of closed intervals is also PAC learnable. To generalize to unions of $p \geq 1$ closed intervals, we need to sum both $p-1$ regions of false positives and both of the $p$ regions of false negatives. That is,
 	\begin{flalign*}
-		\mathbb{P}[R(h_S) > \epsilon] &\leq \sum_{i=2}^{p} \mathbb{P}[(R(h_S)_{FP} > \epsilon/(2p-1)] + \sum_{i=1}^{2p} \mathbb{P}[R(h_S)_{FN} > \epsilon/(2p-1)]\\
-		&= (p-1)\mathbb{P}[(R(h_S)_{FP} > \epsilon/(2p-1)] + 2p \mathbb{P}[R(h_S)_{FN} > \epsilon/(2p-1)]\\
-		&= (p-1)(1-\frac{\epsilon/(2p-1)}{p-1})^m + (2p)(1-\frac{\epsilon/(2p-1)}{p})^m \leq (p-1)e^{-\frac{m\epsilon'}{p}} + 2pe^{-\frac{m \epsilon'}{p}}= (p-1)e^{-\frac{m \epsilon'}{p-1}}+2pe^{-\frac{m \epsilon'}{p}}\\
-		&\leq (p-1)e^{-\frac{m \epsilon'}{p}} + 2pe^{-\frac{m \epsilon'}{p}} = (3p-1)e^{-\frac{m\epsilon}{p(2p-1)}}\\
-		&\leq \delta \implies m \geq \frac{p(2p-1)}{\epsilon}\log \frac{3p-1}{\delta}
+		\mathbb{P}[R(h_S) > \epsilon] &\leq \sum_{i=2}^{p} \mathbb{P}[R(h_S)_{FP} > \epsilon/(2p-1)] + \sum_{i=1}^{2p} \mathbb{P}[R(h_S)_{FN} > \epsilon/(2p-1)]\\
+		&= (p-1)\mathbb{P}[R(h_S)_{FP} > \epsilon/(2p-1)] + 2p \mathbb{P}[R(h_S)_{FN} > \epsilon/(2p-1)]\\
+		&= (p-1)(1-\frac{\epsilon}{2p-1})^m + (2p)(1-\frac{\epsilon}{2(2p-1)})^m \leq (p-1)e^{-m\epsilon'} + 2pe^{-\frac{m \epsilon'}{2}}\\
+		&\leq (3p-1)e^{-\frac{m\epsilon}{2(2p-1)}}\\
+		&\leq \delta \implies m \geq \frac{2(2p-1)}{\epsilon}\log \frac{3p-1}{\delta}
 	\end{flalign*}
 
 }
@@ -512,6 +512,19 @@ which means closed intervals also can be considered PAC-learnable.
 	guarantee a consistent hypothesis. To avoid a case where the algorithm makes random guesses ($\epsilon = 0.5$) without much regard for the quality of its predictions,
 	set $\epsilon := 1/(m+1)$.
 }\\
+\exercise{2.11}{
+	We first have a consistent case ($\delta = 0.05$) where the target function is assumed to lie in the hypothesis space so that empirical risk is 0. Accordingly,
+	\begin{flalign*}
+		R(h_S) \leq \frac{\log(|\mathcal{H}|/\delta)}{m} = 0.055
+	\end{flalign*}
+	This is the inconsistent case, where empirical risk is at $m'/m = 0.1$,
+	\begin{flalign*}
+		R(h) \leq \hat{R}(h_S) + \sqrt{\frac{\log(2|\mathcal{H}|/\delta)}{m}} = 0.271\\
+	\end{flalign*}
+}
+\exercise{2.12}{
+	First note $\delta' = p(h)\delta \implies e^{-\frac{2 \epsilon^2}{m}} \implies \epsilon = \sqrt{\frac{m \log (1/(p(h)\delta))}{2}}$ when considering Hoeffding's inequality.
+}
 \section{Summary}
 PAC learning makes a rather strong assumption that there exists a function
 (concept),

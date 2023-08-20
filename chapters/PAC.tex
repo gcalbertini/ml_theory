@@ -396,36 +396,26 @@ Further reading:\\
 		      \end{flalign*}
 		\item We use Hoeffding's inequality. Recall that $d(h^*) =
 			      \eta$ is a
-		      random variable and so $\mathbb{E}[d(h^*)] = \sum_i x_i
-			      \eta_i	  = m \eta =
-			      \hat{d}(h^*)$, as defined in the problem.
+		      random variable and also $\mathbb{E}[\hat{d}(h^*)] = \sum_i x_i
+			      \eta/m \leq \eta = d(h^*)$, as the expectation of empirical risk is the true risk for i.i.d random variables (getting a sum of up to $m$ 1's for our binary classification purposes), as defined in the problem.
 		      \begin{flalign*}
 			      \mathbb{P}[\hat{d}(h^*) - d(h^*) \geq \epsilon' /
+				      2 ] = \mathbb{P}[\frac{1}{m}(S_m - \mathbb{E}(S_m)) \geq \epsilon' /
 				      2 ]
 			                  & \leq
-			      e^{-\frac{2(\frac{\epsilon'}{2})^2}{\sum_{i=1}^{m} 1^2}} =
-			      e^{-\frac{(\epsilon')^2}{2m}} \leq
-			      \frac{\delta}{2}                               \\
-			      \frac{1}{m} & \geq \frac{2}{(\epsilon')^2}\log
-			      \frac{2}{\delta} \implies m \geq
+			      e^{-\frac{2(m\frac{\epsilon'}{2})^2}{\sum_{i=1}^{m} 1^2}} =
+			      e^{-\frac{(m\epsilon')^2}{2m}} \implies m \geq
 			      \frac{2}{(\epsilon')^2}\log \frac{2}{\delta}
-			                  & (\text{$m$ is positive integer})
 		      \end{flalign*}
 		\item Similar to before, but using union bounding.
 		      \begin{flalign*}
 			      \mathbb{P}[h \in \mathcal{H}~|~d(h) - \hat{d}(h)
 				      \geq
 				      \epsilon' / 2 ]
-			                                           & \leq|\mathcal{H}|e^{-\frac{2(\frac{\epsilon'}{2})^2}{\sum_{i=1}^{m} 1^2}} =
-			      |\mathcal{H}|e^{-\frac{(\epsilon')^2}{2m}} \leq
-			      \frac{\delta}{2}                                                         \\
-			      \frac{1}{m}
-			                                           & \geq \frac{2}{(\epsilon')^2}(\log
-			      \frac{2}{\delta}+\log |\mathcal{H}|) \implies m
-			      \geq
-			      \frac{2}{(\epsilon')^2}(\log
-			      \frac{2}{\delta}+\log |\mathcal{H}|) & (\text{$m$
-				      is positive integer})
+			                                           & \leq|\mathcal{H}|e^{-\frac{2(\frac{m\epsilon'}{2})^2}{\sum_{i=1}^{m} 1^2}} =
+			      |\mathcal{H}|e^{-\frac{(m\epsilon')^2}{2m}} 
+			      \frac{2}{(m\epsilon')^2}(\log
+			      \frac{2}{\delta}+\log |\mathcal{H}|) 
 		      \end{flalign*}
 		\item Using the bounding hint provided,
 		      \begin{flalign*}
@@ -523,7 +513,16 @@ which means closed intervals also can be considered PAC-learnable.
 	\end{flalign*}
 }
 \exercise{2.12}{
-	First note $\delta' = p(h)\delta \implies e^{-\frac{2 \epsilon^2}{m}} \implies \epsilon = \sqrt{\frac{m \log (1/(p(h)\delta))}{2}}$ when considering Hoeffding's inequality.
+	First note $\delta' = p(h)\delta = e^{-2 m\epsilon^2} \implies \epsilon = \sqrt{\frac{ \log (1/(p(h)\delta))}{2m}}$ when considering Hoeffding's inequality with $m$ Bernoulli random variables.
+	\begin{flalign*}
+		\mathbb{P}[R(h)-\hat{R}(h) &\geq \sqrt{\frac{\log \frac{1}{\delta p(h)}}{2m}}] \leq p(h)\delta\\
+		&\implies \{\exists h \in \mathcal{H}~|~R(h)-\hat{R}(h) \geq \sqrt{\frac{\log \frac{1}{\delta p(h)}}{2m}}\} \leq \sum_i\mathbb{P}[R(h)-\hat{R}(h) \geq \sqrt{\frac{\log \frac{1}{\delta p(h)}}{2m}}] \leq \delta\sum_i p(h) = \delta 
+	\end{flalign*}
+	We could use prior density $1/|\mathcal{H}|$ to match the bound given in the inconsistent case for finite
+	hypothesis sets.
+}\\
+\exercise{2.13}{
+	
 }
 \section{Summary}
 PAC learning makes a rather strong assumption that there exists a function

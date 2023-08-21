@@ -396,8 +396,7 @@ Further reading:\\
 		      \end{flalign*}
 		\item We use Hoeffding's inequality. Recall that $d(h^*) =
 			      \eta$ is a
-		      random variable and also $\mathbb{E}[\hat{d}(h^*)] = \sum_i x_i
-			      \eta/m \leq \eta = d(h^*)$, as the expectation of empirical risk is the true risk for i.i.d random variables (getting a sum of up to $m$ 1's for our binary classification purposes), as defined in the problem.
+		      random variable.
 		      \begin{flalign*}
 			      \mathbb{P}[\hat{d}(h^*) - d(h^*) \geq \epsilon' /
 				      2 ] = \mathbb{P}[\frac{1}{m}(S_m - \mathbb{E}(S_m)) \geq \epsilon' /
@@ -522,7 +521,37 @@ which means closed intervals also can be considered PAC-learnable.
 	hypothesis sets.
 }\\
 \exercise{2.13}{
-	
+	\begin{itemize}
+		\item Note $\hat{R}(h) \leq \frac{3}{4}\epsilon \implies \hat{R}(h) \leq \frac{3}{4}R(h)$ when $R(h) \geq \epsilon \implies \gamma = 0.25$.
+			\begin{flalign*}
+				\mathbb{P}[\hat{R}(h) \leq \frac{3}{4}R(h)] \leq e^{-\frac{nR(h)(1/4)^2}{2}} \leq e^{\frac{R(h)\log \frac{\delta}{2^{i+1}}}{\epsilon}} \leq \frac{\delta}{2^{i+1}}
+			\end{flalign*}
+		\item Note $\hat{R}(h) \geq \frac{3}{4}\epsilon \implies \hat{R}(h) \geq \frac{3}{2}R(h)$ when $R(h) \leq \frac{\epsilon}{2} \implies \gamma = 0.5$. Procedure similar to previous.
+		\item Observe $\mathbb{P}[approx~correct~h_i~accepted] = \mathbb{P}[R(h_i) \leq \epsilon/2,~h~accepted] = \mathbb{P}[R(h_i) \leq \epsilon/2]\mathbb{P}[h~accepted]$. Note $\frac{\delta}{2^{i+1}} \leq \frac{1}{4}$.
+			\begin{flalign*}
+				\mathbb{P}[h~accepted~|~R(h)\leq \epsilon/2] &= 1 - \mathbb{P}[R(h_i) \geq \epsilon/2] = 1 - \frac{\delta}{2^{i+1}} \geq \frac{3}{4}\\
+				\mathbb{P}[R(h_i) \leq \epsilon/2] &= 1/2\\
+				\mathbb{P}[approx~correct~h_i~accepted] \geq \frac{3}{8}
+			\end{flalign*}
+		\item The complement gives us the probability that it does not halt, $\frac{5}{8}$. Observe that $\ceil x \leq x$ only for integer solutions (what we want).
+			\begin{flalign*}
+				\Bigl(\frac{5}{8}\Bigr)^j \leq \Bigl(\frac{5}{8}\Bigr)^{\frac{\log \frac{2}{\delta}}{\log \frac{5}{8}}} = e^{-\frac{\log \frac{2}{\delta}}{2\log \frac{5}{8}}} \leq e^{-\log \frac{2}{\delta}} = \frac{\delta}{2}
+			\end{flalign*}
+		\item Using the expression given,
+			\begin{flalign*}
+				\tilde{s} \geq s &\iff \floor{2^{\frac{i-1}{\log \frac{2}{\delta}}}}  \geq s\\
+				&\implies 2^{\frac{i-1}{\log \frac{2}{\delta}}} \geq s \iff \frac{i-1}{\log \frac{2}{\delta}} \geq \log_2 s\\
+				&\implies i \geq 1 + \log \frac{2}{\delta}(\log_2 s) \geq \ceil {1 + \log \frac{2}{\delta}(\log_2 s)}
+			\end{flalign*}
+			Where the last step is for the approriate number of integer solutions (iterations).
+			\item Using the statements above, we  see that algo $\mathbb{B}$ will halt with probability of at least $1-\frac{\delta}{2}$. It will then return approx correct hypothesis with error at most $\epsilon$ given the sum of the rather curious ceiling function results.
+	\end{itemize}
+}
+
+\exercise{2.14}{
+	The noise is 0 in a deterministic setting as this mode assumes no randomness in the universe, thus every label is unique. The expectation would be zero for matching labels, which in this case will always be unique for all instances. See:\\
+	\url{https://en.wikipedia.org/wiki/Bayes_classifier}\\
+	\url{https://www.cs.jhu.edu/~ayuille/courses/Stat161-261-Spring14/RevisedLectureNotes2.pdf}
 }
 \section{Summary}
 PAC learning makes a rather strong assumption that there exists a function

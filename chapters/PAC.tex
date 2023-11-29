@@ -87,45 +87,45 @@ Further reading:\\
 			\mathcal{D}^m} x \mathbb{P}[\mathbb{1}_{h(x)
 				\neq c(x)}] =	     \underset{x \sim
 			\mathcal{D}^m}{\mathbb{P}}[h(x) \neq
-			c(x)]
+			c(x)] \\
+			&=  \sum_{i=1}^2 \underset{x \sim
+			 \mathcal{D}^m}{\mathbb{P}}[h(x) \neq c(x)~|~Oracle_i]\mathbb{P}[Oracle_i]\\
 		\\   &=\mathcal{D}^m(\mathcal{X}^+)(R(h)_{\mathcal{D}_{+}})+\mathcal{D}^m(\mathcal{X}^-)(R(h)_{\mathcal{D}_{-}})
 	\end{flalign*}
 	Now for a weighted sampling method from the negative and positive
-	instance distributions we can say $\epsilon_{\mathcal{D}} =
-		\mathbb{P}[\mathcal{D}^+](\alpha
-		\epsilon)_{\mathcal{D}^+}+\mathbb{P}[\mathcal{D}^-](\beta
-		\epsilon)_{\mathcal{D}^-} =  \epsilon
-		\underbrace{(\mathbb{P}[\mathcal{D}^+](\alpha -
-			\beta)+\beta)}_{\leq 1}$ for some constants $0 \leq
-		\alpha, \beta \leq 1$.
-	Note that $\alpha = \beta = 0 \implies \epsilon = 0$,
-	which means you're demanding that the learned hypothesis
-	perfectly match the true target function,
-	which can lead to overfitting and complex hypotheses that are
-	computationally expensive to work with (recall $\epsilon > 0$
-	by definition). Conversely, by setting
-	$ \epsilon  =1$, you're ok accepting any hypothesis without
-	regard to its performance.
+	instance distributions we can say $\mathcal{D} =
+		\frac{\alpha
+		\mathcal{D}^++\beta
+		\mathcal{D}^-}{\underbrace{\alpha+\beta}}_{=1} =  \alpha(\mathcal{D}^+-\mathcal{D}^-)+\mathcal{D}^-$.
+	Note that $\alpha = \beta = 0 \implies \epsilon$ is meaningless,
+	as there are no positive and negative examples in the split dataset. Conversely, by setting
+	$ \alpha  =1$, you're only selecting positive instances so that we cannot measure false positives
+	but can measure false negatives (errors in identifying positives).
 	Thus, select an
 	appropriate $\delta$ and, for simplicity, set
-	$\mathbb{P}[\mathcal{D}^+] =
-		\frac{1}{2}$, to get
+	$\alpha = \beta =
+		\frac{1}{2}$, to get $\mathcal{D} = \frac{\mathcal{D}^+ + \mathcal{D}^-}{2}$. Note that $\epsilon/2$ is a magically chosen error bound but this is to make a nice use of union bound simplification later.
 	\begin{flalign*}
-		\mathbb{P}[R(h)_\mathcal{D} \leq \frac{\alpha \epsilon}{2}]
+		\mathbb{P}[R(h)_\mathcal{D} \leq \frac{\epsilon}{2}]
 		           &
 		\geq 1 - \delta
 		\\
-		\frac{1}{2}(\mathbb{P}[R(h)_{\mathcal{D}_{+}} \leq \alpha
-			\epsilon]+\mathbb{P}[R(h)_{\mathcal{D}_{-}} \leq \alpha
-		\epsilon]) & \geq 1 -
-		\delta
+		R(h)_{\mathcal{D}^m} &= \frac{1}{2}(h(x) = c(x))_{+} + \frac{1}{2}(h(x) = c(x))_{-}\\ 
+		& = \frac{R(h)_{x
+		\sim \mathcal{D}_{-}} + R(h)_{x
+		\sim \mathcal{D}_{+}}}{2}\\
+		\implies \mathbb{P}[\frac{R(h)_{x
+		\sim \mathcal{D}_{-}} + R(h)_{x
+		\sim \mathcal{D}_{+}}}{2} \leq \frac{\epsilon}{2}] &= \mathbb{P}[R(h)_{x
+		\sim \mathcal{D}_{-}} + R(h)_{x
+		\sim \mathcal{D}_{+}} \leq \epsilon]\\
+		& \leq \mathbb{P}[R(h)_{x
+		\sim \mathcal{D}_{+}} \leq \epsilon] + \mathbb{P}[R(h)_{x
+		\sim \mathcal{D}_{-}} \leq \epsilon]
 	\end{flalign*}
-	If we set $\alpha = 1$ for this case we then see that by selecting
-	$\mathbb{P}[R(h)_\mathcal{D} \leq \frac{\epsilon}{2}]$ with an
-	appropriate
-	confidence interval, we must have that both
+	We must have that both
 	$\mathbb{P}[R(h)_{\mathcal{D}_{-}}
-			\leq \epsilon], \mathbb{P}[R(h)_{\mathcal{D}_{+}} \leq
+			\leq \epsilon],~ \mathbb{P}[R(h)_{\mathcal{D}_{+}} \leq
 			\epsilon] \geq 1 -
 		\delta$.  We immediately
 	notice that a biased dataset would then require us to make considerable
@@ -213,12 +213,7 @@ Further reading:\\
 		\leq \frac{\delta}{2}                                     \\
 	\end{flalign*}
 	Since we want to include the minimum number of positive instances, we
-	set the latter expression to an appropriate bound $\delta/2$ (from
-	above, we
-	saw that using an even split weight between negative and positive
-	examples with
-	overall $\epsilon/2$ as we set here, so can use 2(1-$(\delta/2)) >
-		1-\delta$)
+	set the latter expression to an appropriate bound $\delta/2$ (thinking ahead to a union bound where positive and negative instances in the full dataset would have $\leq \delta$)
 	and subsitute back to get an expression of $m \geq \min
 		\{\frac{2m^+}{\epsilon},
 		\frac{8}{\epsilon}\log(2/(\delta))\}$. A similar

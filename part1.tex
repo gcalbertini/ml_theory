@@ -1,5 +1,6 @@
 \documentclass[titlepage]{book}
 \usepackage[utf8]{inputenc}
+\usepackage{ragged2e}
 
 \input{preamble}
 
@@ -16,8 +17,6 @@
         \LARGE
         Selected Solutions for Mohri's Foundation to ML (2nd)\\
 		Others to be added on an ad hoc basis\\
-		To the curious: ML is not the same thing as deep learning. Theory here does not include neural network work and requires more human intervention by nature. The latter will be included in its own repo with PyTorch scripts. Algorithmic analysis and probabilistic considerations found in CLRS text work under dev.
-            
         \vspace{1.5cm}
             
         \textbf{Guilherme Albertini}
@@ -44,6 +43,7 @@
 \mainmatter
 
 \include{chapters/PAC.tex}
+\include{chapters/VC.tex}
 
 
 \end{document}

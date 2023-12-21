@@ -1,11 +1,96 @@
 \chapter{Rademacher Complexity and VC-Dimension}
 \begin{flushleft}
-	TBD
+	RC allows us to measure the richness of a class of real-valued
+	functions with respect to a probability distribution. The standard
+	``intuition'' is that the RC quantifies the ability of the
+	function class $\mathcal{G}$ to fit symmetric random noise: a low value
+	(close to 0) means
+	that this ability is limited (and hence the capacity of this class is
+	bounded), while a high value (close to 1 for $\{-1,1\}$-valued
+	classes) means that essentially any sequence of random signed
+	bits has a perfect fit (and hence the capacity is unbounded).``Capacity''
+	is not a formally defined term and notice that I put it in quotes.
+	Roughly
+	speaking this notion of capacity measures the ability of a function
+	class to fit random noise. In statistical learning theory, a small expected Rademacher complexity indicates that, on average,
+	the hypothesis class does not correlate strongly with random noise. This is desirable because
+	it suggests that the class is not overly flexible and doesn't fit the noise in the data but rather captures the underlying patterns.
+	VC-dim is a worst-case measure of this, while Rademacher is more of an
+	average-case measure.\\
+	Further reading:\\
+
+	\url{https://cstheory.stackexchange.com/questions/47879/whats-the-intuition-behind-rademacher-complexity}\\
+
+	\url{https://people.math.binghamton.edu/qiao/math605/book/rademacher-complexity.html}\\
+
+	\url{https://users.cs.utah.edu/~bhaskara/courses/theoryml/scribes/lecture6.pdf}\\
+	% PAC limitation highlighted
+
+	\url{https://engineering.purdue.edu/ChanGroup/ECE595/files/Lecture26_growth.pdf}\\
+	\url{https://nowak.ece.wisc.edu/SLT09/lecture19.pdf}\\
+
+	\url{https://cse.iitkgp.ac.in/~saptarshi/courses/ml2018spring/vc_inequality_proof.pdf}\\
+
 	\section{Priors}
-	Text
-	
+
+	Some ``missing'' proofs in the text are reproduced below and adjusted for
+	clarity and notation where appropriate. These are fairly involved and focus on
+	how to derive the growth function bounds directly, without using Rademacher
+	complexity bounds first as Professor Mohri mentions. See links above for
+	reference.
+
+	Intuition: although model class is infinite, using a finite set of training
+	data to select a good rule effectively reduces the number of different models
+	we need to consider (R. Nowak). For $m$ smaller of equal to VC dimension for
+	that hypothesis space we have that the largest set that can be shattered by the
+	space is $2^m$. For $m$ greater than the VC dimension for this space, then
+	$\Pi_{\mathcal{H}}(m) < 2^m$. Original proofs to follow are involved but its
+	first key to get the effective size of the class induced by the training data
+	by a ``ghost sample'' that is another sequence of data in all identical to the
+	data generating distribution. Let's say $S = \{(X_1, Y_1), \ldots, (X_n,
+		Y_n)\}~|~(X_i,Y_i) \sim P_{XY}$ in i.i.d fashion. The ghost sample follows with
+	$S'$ notation. We now want to show $$\mathbb{P}\bigl(\sup_{h \in \mathcal{H}}
+		|\hat{R}_S(h) - R(h)| > \epsilon\bigr) \leq 2\mathbb{P}\bigl(\sup_{h \in
+			\mathcal{H}}|\hat{R}_S(h)-\hat{R}'(h)| > \frac{\epsilon}{2}\bigr)$$ The
+	empirical risk $\hat{R}$ is the average disagreement between our proposed
+	learning rule for the training sample and the true labeling for the joint
+	distribution. RHS absolute value is now symmetric with two empirical risks
+	here, and we define $\tilde{h}(S) \equiv \tilde{h}$ to be an element in
+	$\mathcal{H}$ such that, should $|\hat{R}_S(h) - R(h)| > \epsilon$ exist, be
+	defined as this element or, if not, an arbitrary element in this set. While it
+	can be thought of as $$\tilde{h} \approx \arg \max_{h \in \mathcal{H}}
+		|\hat{R}_S(h) - R(h)| $$ though this is crude as the hypothesis set is usually
+	infinite and there may not be an element serving as the maximizer. Now the RHS
+	implies the following (note for reals $|x-z| > \epsilon \wedge |y-z| \leq
+		\epsilon/2 \implies |x-y| \geq \epsilon/2$):
+
+	\begin{flalign*}
+		\mathbb{P}\bigl(\sup_{h \in
+		\mathcal{H}}|\hat{R}_S(h)-\hat{R}'(h)| > \frac{\epsilon}{2}\bigr) & \geq \mathbb{P}\bigl(|\hat{R}_S(h)-\hat{R}'(h)| > \frac{\epsilon}{2}\bigr)                                                                                                                       \\
+		                                                                  & \geq \mathbb{P}\bigl(|\hat{R}_S(\tilde{h})-R(\tilde{h})|> \epsilon \wedge |\hat{R}'_S(\tilde{h})-\R(\tilde{h})|<\frac{\epsilon}{2}\bigr)                                                         \\
+		                                                                  & = \mathbb{E}_S\bigl[\mathbb{1}\{|\hat{R}_S(\tilde{h})-R(\tilde{h})|> \epsilon\}\mathbb{1}\bigl\{|\hat{R}'_S(\tilde{h})-R(\tilde{h})|<\frac{\epsilon}{2}\bigr\}\bigr]                             \\
+		                                                                  & = \mathbb{E}_S\bigl[\mathbb{1}\{|\hat{R}_S(\tilde{h})-R(\tilde{h})|> \epsilon\}\mathbb{E}_S\bigr[\mathbb{1}\bigl\{|\hat{R}'_S(\tilde{h})-R(\tilde{h})|<\frac{\epsilon}{2}\bigr\}~|~S\bigr]\bigr] \\
+		                                                                  & = \mathbb{E}_S\bigl[\mathbb{1}\{|\hat{R}_S(\tilde{h})-R(\tilde{h})|> \epsilon\}\mathbb{P}\bigr(|\hat{R}'_S(\tilde{h})-R(\tilde{h})|<\frac{\epsilon}{2}~|~S\bigr)\bigr]                           \\
+	\end{flalign*}
+	By conditioning on the sample, $\hat{R}'_S(\tilde{h})-R(\tilde{h}) = \frac{1}{m}\sum_{i} U_i$ for $U_i = \mathbb{1}\bigl\{\tilde{h}(X_i) \neq Y_i\bigr\} - \mathbb{E}\big[\mathbb{1}\bigl\{\tilde{h}(X'_i) \neq Y'_i\bigr\}\big]$ being a zero-mean i.i.d. set RVs. We now use Chebyshev's inequality (see C.14) in the following:
+	\begin{flalign*}
+		\mathbb{P}\bigl(|\hat{R}'_S(\tilde{h})-R(\tilde{h})| < \frac{\epsilon}{2} | S \bigr) & = \mathbb{P}\Bigl(|\frac{1}{m}\sum_{i}^{m}U_i|<\frac{\epsilon}{2}|S\Bigr)                    \\
+		                                                                                     & = \mathbb{P}\Bigl(|\sum_i^{n} U_i | < \frac{m \epsilon}{2} | S\Bigr)                         \\
+		                                                                                     & \geq 1 - 4 \frac{4}{m^2\epsilon^2} \Var \Bigl(|\sum U_i||S\Bigr)                             \\
+		                                                                                     & = 1 - 4 \frac{4}{m^2\epsilon^2}m\Var(U_i|S)                                                  \\
+		                                                                                     & \geq 1 - 4 \frac{4}{m^2\epsilon^2} \frac{1}{4} = 1 - \frac{1}{m \epsilon^2} \geq \frac{1}{2}
+	\end{flalign*}
+	which assumes the denominator $m \epsilon^2 \geq 2$ to avoid a non-informative case where a probability is at least zero. Thus,
+	\begin{flalign*}
+		\mathbb{P}\bigl(\sup_{h \in \mathcal{H}}|\hat{R}_S(h)-\hat{R}'_S(h)| & \geq \frac{\epsilon}{2}\bigr)                                                                                                                                               \\
+		                                                                  & \geq \mathbb{E}_S \big[\mathbb{1}\{|\hat{R}_S(\tilde{h})-R(\tilde{h})| > \epsilon\}\mathbb{P} \bigl(|\tilde{R}'_S(\tilde{h})-R(\tilde{h}) < \frac{\epsilon}{2}|S\bigr)\big] \\
+		                                                                  & \geq \frac{1}{2} \mathbb{E}_S \big[\mathbb{1}\{|\hat{R}_S(\tilde{h})-R(\tilde{h})|>\epsilon\}\big]                                                                          \\
+		                                                                  & = \frac{1}{2}\mathbb{P}\bigl\{|\hat{R}_S(\tilde{h})-R(\tilde{h})|>\epsilon\bigr\}                                                                                           \\
+		                                                                  & \geq \frac{1}{2} \mathbb{P} \bigl\{\sup_{h \in \mathcal{H}}|\hat{R}_S(h)-R(h)|>\epsilon\bigr\}
+	\end{flalign*}
+	and the result follows. Now instead of symmetrization by the ghost sample, we will symmetrize by the random signs. 
 	\section{Exercises}
-	
+
 	\exercise{3.1}{TBD}\\
-	
+
 \end{flushleft}

@@ -20,7 +20,7 @@
 	Further reading:\\
 
 	\url{https://cstheory.stackexchange.com/questions/47879/whats-the-intuition-behind-rademacher-complexity}\\
-
+	\url{https://ocw.mit.edu/courses/18-465-topics-in-statistics-statistical-learning-theory-spring-2007/resources/l10/}\\
 	\url{https://people.math.binghamton.edu/qiao/math605/book/rademacher-complexity.html}\\
 
 	\url{https://users.cs.utah.edu/~bhaskara/courses/theoryml/scribes/lecture6.pdf}\\
@@ -44,14 +44,15 @@
 	we need to consider (R. Nowak). For $m$ smaller of equal to VC dimension for
 	that hypothesis space we have that the largest set that can be shattered by the
 	space is $2^m$. For $m$ greater than the VC dimension for this space, then
-	$\Pi_{\mathcal{H}}(m) < 2^m$. Original proofs to follow are involved but its
+	$\prod_{\mathcal{H}}(m) < 2^m$. Original proofs to follow are involved but its
 	first key to get the effective size of the class induced by the training data
 	by a ``ghost sample'' that is another sequence of data in all identical to the
-	data generating distribution. Let's say $S = \{(X_1, Y_1), \ldots, (X_n,
-		Y_n)\}~|~(X_i,Y_i) \sim P_{XY}$ in i.i.d fashion. The ghost sample follows with
-	$S'$ notation. We now want to show $$\mathbb{P}\bigl(\sup_{h \in \mathcal{H}}
-		|\hat{R}_S(h) - R(h)| > \epsilon\bigr) \leq 2\mathbb{P}\bigl(\sup_{h \in
-			\mathcal{H}}|\hat{R}_S(h)-\hat{R}'(h)| > \frac{\epsilon}{2}\bigr)$$ The
+	data generating distribution (aka permutation). Let's say $S = \{(X_1, Y_1),
+		\ldots, (X_n, Y_n)\}~|~(X_i,Y_i) \sim P_{XY}$ in i.i.d fashion. The ghost
+	sample follows with $S'$ notation. We now want to show
+	$$\mathbb{P}\bigl(\sup_{h \in \mathcal{H}} |\hat{R}_S(h) - R(h)| >
+		\epsilon\bigr) \leq 2\mathbb{P}\bigl(\sup_{h \in
+			\mathcal{H}}|\hat{R}_S(h)-\hat{R}'_S(h)| > \frac{\epsilon}{2}\bigr)$$ The
 	empirical risk $\hat{R}$ is the average disagreement between our proposed
 	learning rule for the training sample and the true labeling for the joint
 	distribution. RHS absolute value is now symmetric with two empirical risks
@@ -76,19 +77,58 @@
 	\begin{flalign*}
 		\mathbb{P}\bigl(|\hat{R}'_S(\tilde{h})-R(\tilde{h})| < \frac{\epsilon}{2} | S \bigr) & = \mathbb{P}\Bigl(|\frac{1}{m}\sum_{i}^{m}U_i|<\frac{\epsilon}{2}|S\Bigr)                    \\
 		                                                                                     & = \mathbb{P}\Bigl(|\sum_i^{n} U_i | < \frac{m \epsilon}{2} | S\Bigr)                         \\
-		                                                                                     & \geq 1 - 4 \frac{4}{m^2\epsilon^2} \Var \Bigl(|\sum U_i||S\Bigr)                             \\
-		                                                                                     & = 1 - 4 \frac{4}{m^2\epsilon^2}m\Var(U_i|S)                                                  \\
-		                                                                                     & \geq 1 - 4 \frac{4}{m^2\epsilon^2} \frac{1}{4} = 1 - \frac{1}{m \epsilon^2} \geq \frac{1}{2}
+		                                                                                     & \geq 1 - 4 \frac{2}{m^2\epsilon^2} \Var \Bigl(|\sum U_i||S\Bigr)                             \\
+		                                                                                     & = 1 - 4 \frac{2}{m^2\epsilon^2}m\Var(U_i|S)                                                  \\
+		                                                                                     & \geq 1 - 4 \frac{2}{m^2\epsilon^2} \frac{1}{2} = 1 - \frac{1}{m \epsilon^2} \geq \frac{1}{2}
 	\end{flalign*}
-	which assumes the denominator $m \epsilon^2 \geq 2$ to avoid a non-informative case where a probability is at least zero. Thus,
+	which assumes the denominator $m \epsilon^2 \geq 2$ to avoid a non-informative case. Thus,
 	\begin{flalign*}
 		\mathbb{P}\bigl(\sup_{h \in \mathcal{H}}|\hat{R}_S(h)-\hat{R}'_S(h)| & \geq \frac{\epsilon}{2}\bigr)                                                                                                                                               \\
-		                                                                  & \geq \mathbb{E}_S \big[\mathbb{1}\{|\hat{R}_S(\tilde{h})-R(\tilde{h})| > \epsilon\}\mathbb{P} \bigl(|\tilde{R}'_S(\tilde{h})-R(\tilde{h}) < \frac{\epsilon}{2}|S\bigr)\big] \\
-		                                                                  & \geq \frac{1}{2} \mathbb{E}_S \big[\mathbb{1}\{|\hat{R}_S(\tilde{h})-R(\tilde{h})|>\epsilon\}\big]                                                                          \\
-		                                                                  & = \frac{1}{2}\mathbb{P}\bigl\{|\hat{R}_S(\tilde{h})-R(\tilde{h})|>\epsilon\bigr\}                                                                                           \\
-		                                                                  & \geq \frac{1}{2} \mathbb{P} \bigl\{\sup_{h \in \mathcal{H}}|\hat{R}_S(h)-R(h)|>\epsilon\bigr\}
+		                                                                     & \geq \mathbb{E}_S \big[\mathbb{1}\{|\hat{R}_S(\tilde{h})-R(\tilde{h})| > \epsilon\}\mathbb{P} \bigl(|\tilde{R}'_S(\tilde{h})-R(\tilde{h}) < \frac{\epsilon}{2}|S\bigr)\big] \\
+		                                                                     & \geq \frac{1}{2} \mathbb{E}_S \big[\mathbb{1}\{|\hat{R}_S(\tilde{h})-R(\tilde{h})|>\epsilon\}\big]                                                                          \\
+		                                                                     & = \frac{1}{2}\mathbb{P}\bigl\{|\hat{R}_S(\tilde{h})-R(\tilde{h})|>\epsilon\bigr\}                                                                                           \\
+		                                                                     & \geq \frac{1}{2} \mathbb{P} \bigl\{\sup_{h \in \mathcal{H}}|\hat{R}_S(h)-R(h)|>\epsilon\bigr\}
 	\end{flalign*}
-	and the result follows. Now instead of symmetrization by the ghost sample, we will symmetrize by the random signs. 
+	and the result follows. Now instead of symmetrization by the ghost sample, we will symmetrize by the random signs. We observe that $\mathbb{1}\{f(X_i) \neq Y_i\}$ and $\mathbb{1}\{f(X'_i) \neq Y'_i\}$ have the same distribution and thus their difference has zero mean and is symmetric, i.e., -Z and Z having the same distribution for some RV Z.
+
+	\begin{flalign*}
+		\mathbb{P}(\sup_{h \in \mathcal{H}}|\hat{R}_S(h)-\hat{R}'_S(h)| > \frac{\epsilon}{2}) & = \mathbb{P} \bigl( \sup_{h \in \mathcal{H}} \frac{1}{m} |\sum_{i=1}^{m} \mathbb{1}_{h(X_i) \neq Y_i}-\mathbb{1}_{h(X'_i)-Y'_i}| > \frac{\epsilon}{2} \bigr)                                                                                        \\
+		                                                                                      & = \mathbb{P} \bigl( \sup_{h \mathcal{H}} \frac{1}{m} |\sum_{i=1}^{m} \sigma_i(\mathbb{1}_{h(X_i) \neq Y_i}-\mathbb{1}_{h(X'_i)-Y'_i})| > \frac{\epsilon}{2} \bigr)                                                                                  \\
+		                                                                                      & \leq \mathbb{P}\Bigl(\sup_{h \in \mathcal{H}} \frac{1}{m} |\sum_{i} \sigma_i\mathbb{1}_{h(X_i) \neq Y_i}|> \frac{\epsilon}{2} \cup \sup_{h \in \mathcal{H}} \frac{1}{m} |\sum_{i} \sigma_i\mathbb{1}_{h(X'_i) \neq Y'_i}|> \frac{\epsilon}{2}\Bigr) \\
+		                                                                                      & \leq 2\mathbb{P}\bigl(\sup_{h \in \mathcal{H}} \frac{1}{m}|\sum_i \sigma_i \mathbb{1}_{h(X_i) \neq Y_i}|>\frac{\epsilon}{2}\bigr)
+	\end{flalign*}
+	Where union bounding is used in the last steps. The Rademacher RVs are symmetric and so all of this is used to imply $$\mathbb{P}\bigl(\sup_{h \in \mathcal{H}} |\hat{R}_S(h)-R(h)|> \epsilon\bigr) \leq 4\mathbb{P}\Bigl(\sup_{h \in \mathcal{H}} \frac{1}{m}|\sum_{i=1}^{m}\sigma_i \mathbb{1}\{h(X_i) \neq Y_i\}|>\frac{\epsilon}{2}\Bigr)$$
+	Since the ghost sample has now been occluded we can condition on the original training sample as it relates the the cardinality of the hypothesis set. Note that the supremum's argument on the RHS has a sequence that can take at most $\prod_{\mathcal{H}}(m)$ different values. Now, if we take the smallest subset of $\mathcal{H}$ that generates all the different prediction rules for the data (thus $\mathcal{H}(x_1, \ldots, x_m) \subseteq \mathcal{H} $), then $|\mathcal{H}(x_1, \ldots, x_m)| \leq \prod_{\mathcal{H}}(m)$.
+	Observe that the growth function is concerned with the number of different ways all the hypotheses in the space can classify points (aka dichotomies), while this subset measures all possible prediction rules for a particular dataset using the fewest hypotheses in that space.
+	\begin{flalign*}
+		\mathbb{P}\bigl(\sup_{h \in \mathcal{H}}|\frac{1}{m}\sum_i \sigma_i \mathbb{1}_{h(x_i) \neq y_i}| > \frac{\epsilon}{2}\bigr) & = \mathbb{P}\Bigl(\max_{h \in \mathcal{H}(x_1, \ldots, x_m)} \frac{1}{m} |\sum_i \sigma_i \mathbb{1}_{h(x_i) \neq y_i}| > \frac{\epsilon}{2}\Bigr)                                 \\
+		                                                                                                                             & = \mathbb{P}\bigl(\bigcup_{h \in \mathcal{H}(x_1,\ldots, x_m)} \frac{1}{m} |\sum_i \sigma_i \mathbb{1}_{h(x_i) \neq y_i}| > \frac{\epsilon}{2}\bigr)                               \\
+		                                                                                                                             & \leq \sum_{h \in \mathcal{H}(x_1,\ldots, x_m)} \mathbb{P} \Bigl(\frac{1}{m} |\sum_i \sigma_i \mathbb{1}_{h(x_i) \neq y_i}| > \frac{\epsilon}{2}\Bigr)                              \\
+		                                                                                                                             & \leq |\mathcal{H}(x_1, \ldots, x_m)| \sup_{h \in \mathcal{H}(x_1, \ldots, x_m)} \mathbb{P}\bigl(\frac{1}{m}|\sum \sigma_i \mathbb{1}_{h(x_i) \neq y_i}| > \frac{\epsilon}{2}\bigr) \\
+		                                                                                                                             & \leq \prod_{\mathcal{H}}(m) \sup_{h \in \mathcal{H}(x_1, \ldots, x_m)} \mathbb{P}\bigl(|\sum_i \sigma_i \mathbb{1}_{h(x_i) \neq y_i}| > \frac{\epsilon}{2}\bigr)                   \\
+		                                                                                                                             & \leq \prod_{\mathcal{H}}(m) \sup_{h \in \mathcal{H}} \mathbb{P}\bigl(\frac{1}{m}|\sum_i \sigma_i \mathbb{1}_{h(x_i) \neq y_i}| > \frac{\epsilon}{2}\bigr)
+	\end{flalign*}
+	Now note we can use Hoeffding's inequlaity since the argument inside the inner sum is bounded, $[-1, 1]$, and is a sum of $m$ independent, zero-mean RVs.
+	\begin{flalign*}
+		\mathbb{P}\Bigl(\frac{1}{m}|\sum_{i=1}^{m} \sigma_i \mathbb{1}_{h(x_i)\neq y_i}| > \frac{\epsilon}{2}\Bigr) \leq \mathbb{P}\Bigl(|\sum_{i=1}^{m} \sigma_i \mathbb{1}_{h(x_i)\neq y_i}| > \frac{m\epsilon}{2}\Bigr) & \leq 2e^{-\frac{2(m\epsilon/2)^2}{\sum_{i = 1}^{m} (1+1)^2}} = 2e^{-\frac{m \epsilon^2}{8}}
+	\end{flalign*}
+	Now if we look at the RHS from before,
+	\begin{flalign*}
+		\mathbb{P}\Bigl(\sup_{h \in \mathcal{H}} \frac{1}{m}|\sum_{i=1}^{m} \sigma_i \mathbb{1}_{f(X_i) \neq Y_i}| > \frac{\epsilon}{2}\Bigr) & = \mathbb{E}_S \bigl[\mathbb{1} \bigl\{ \sup_{h \in \mathcal{H}} \frac{1}{m}|\sum_{i=1}^{m}\sigma_i \mathbb{1}_{f(X_i) \neq Y_i} \bigr\} > \frac{\epsilon}{2}\bigr]                             \\
+		                                                                                                                                      & = \mathbb{E}_S \Bigl[\mathbb{E}_S \bigl[\mathbb{1} \Bigl\{\sup_{h \in \mathcal{H}} \frac{1}{m} |\sum_{i=1}^{m} \sigma_i \mathbb{1} \bigl\{f(X_i) \neq Y_i\bigr\}|\Bigr\}|S\bigr]\Bigr]          \\
+		                                                                                                                                      & = \mathbb{E}_S \bigl[\mathbb{P} \bigl(\sup_{h \in \mathcal{H}} \frac{1}{m}|\sum_{i=1}^{m} \sigma_i \mathbb{1}_{f(X_i)\neq Y_i}| > \frac{\epsilon}{2}|S\bigr) \bigr]                             \\
+		                                                                                                                                      & \leq \prod_{\mathcal{H}}(m) \mathbb{E}_S \biggl[\sup_{h \in \mathcal{H}} \mathbb{P} \bigl(\frac{1}{m}|\sum_{i=1}^{m} \sigma_i \mathbb{1}_{f(X_i)\neq Y_i}| > \frac{\epsilon}{2}|S\bigr) \biggr] \\
+		                                                                                                                                      & \leq \prod_{\mathcal{H}}(m) \mathbb{E}_S \biggl[2e^{-\frac{m \epsilon^2}{8}} | S\biggr] = 2 \prod_{\mathcal{H}}(m) e^{-\frac{m \epsilon^2}{8}}
+	\end{flalign*}
+
+	Now recall the previous relation and connect the dots,
+	\begin{flalign*}
+		\mathbb{P}\bigl(\sup_{h \in \mathcal{H}} |\hat{R}_S(h)-R(h)|> \epsilon\bigr) & \leq 4\mathbb{P}\Bigl(\sup_{h \in \mathcal{H}} \frac{1}{m}|\sum_{i=1}^{m}\sigma_i \mathbb{1}\{h(X_i) \neq Y_i\}|>\frac{\epsilon}{2}\Bigr) \\
+		                                                                             & \leq 8 \prod_{\mathcal{H}}(m)e^{-\frac{m \epsilon^2}{8}}                                                                                  \\
+		                                                                             & \leq 4 \prod_{\mathcal{H}}(2m) e^{-\frac{m \epsilon^2}{8}}
+	\end{flalign*}
+	Where the last line uses the fact that the growth function $\prod_{\mathcal{H}}(m) \leq 2^m$ and so $2^{3+m} \leq 2^{2m+2} ~\forall m \geq 1$. We then have finally shown how growth function bounds can be also derived directly without using Rademacher complexity bounds first.
+
 	\section{Exercises}
 
 	\exercise{3.1}{TBD}\\

@@ -213,7 +213,7 @@ Further reading:\\
 		\leq \frac{\delta}{2}                                     \\
 	\end{flalign*}
 	Since we want to include the minimum number of positive instances, we
-	set the latter expression to an appropriate bound $\delta/2$ (thinking ahead to a union bound where positive and negative instances in the full dataset would have $\leq \delta$)
+	set the latter expression to an appropriate bound $\delta/2$ (thinking ahead to a union bound where positive and negative instances sum to $\leq \delta$)
 	and subsitute back to get an expression of $m \geq \min
 		\{\frac{2m^+}{\epsilon},
 		\frac{8}{\epsilon}\log(2/(\delta))\}$. A similar
@@ -539,7 +539,7 @@ which means closed intervals also can be considered PAC-learnable.
 				&\implies i \geq 1 + \log \frac{2}{\delta}(\log_2 s) \geq \ceil {1 + \log \frac{2}{\delta}(\log_2 s)}
 			\end{flalign*}
 			Where the last step is for the approriate number of integer solutions (iterations).
-			\item Using the statements above, we  see that algo $\mathbb{B}$ will halt with probability of at least $1-\frac{\delta}{2}$. It will then return approx correct hypothesis with error at most $\epsilon$ given the sum of the rather curious ceiling function results.
+			\item Using the statements above, we  see that algo $\mathbb{B}$ will halt with probability of at least $1-\frac{\delta}{2}$. It will then return approx correct hypothesis with error at most $\epsilon$ given the sum of the rather curious ceiling function.
 	\end{itemize}
 }
 
